@@ -1,7 +1,10 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const TEXT = 'Hello World';
+  const router = useRouter();
+  const { code } = router.query;
   return (
     <>
       <Head>
@@ -12,6 +15,7 @@ export default function Home() {
       </Head>
       <main>
         <div>{TEXT}</div>
+        <div>{code}</div>
       </main>
     </>
   );
