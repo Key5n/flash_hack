@@ -39,13 +39,32 @@
 もう一方がフラッシュカード
 
 # データモデル
+入力
 ```
 {
   {
-    "name": "itchy",
+    "id": "0"
+    "word": "itchy",
   },
   {
-    "name": "in order",
-  }
+    "id": "1"
+    "word": "in order"
+  },
+  ...
+}
+```
+出力
+```
+{
+  {
+    "id": "0",
+    "word": "itchy",
+    "check": false,
+  },
+  {
+    "id": "1",
+    "word": "in order",
+    "check": true
+  },
 }
 ```
