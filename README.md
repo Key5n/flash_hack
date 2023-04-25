@@ -35,36 +35,76 @@
 - Vercel
 
 # 分担
-一方がNotion提携
+
+一方が Notion 提携
 もう一方がフラッシュカード
 
+# Notion 提携側
+
+## データフェッチ
+
+1. ルートにおいて getServersideProps でデータベースの値を fetch してくる
+1. データベースの値をグローバルコンテキストにセット
+
+## データ更新
+
+1. 下のデータモデルの出力のようなデータが request の body として与えられる
+1. `/api/page/`にリクエストが投げられる
+1. ページ ID のチェックボックスを request の body の通りにセットする
+1. notion から更新後のデータベースの値を返す
+1. クライアントサイドで変更させる
+
 # データモデル
+
 入力
-```
+
+```json
 {
-  {
-    "id": "0"
-    "word": "itchy",
-  },
-  {
-    "id": "1"
-    "word": "in order"
-  },
+  [
+    {
+      "page_id": 'hoge',
+      "properties":{
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
+    },
+    {
+      "page_id": 'fuga',
+      "properties": {
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
+    }
   ...
+  ]
 }
 ```
+
 出力
-```
+
+```json
 {
-  {
-    "id": "0",
-    "word": "itchy",
-    "check": false,
-  },
-  {
-    "id": "1",
-    "word": "in order",
-    "check": true
-  },
+  [
+    {
+      "page_id": 'hoge',
+      "properties":{
+        "Checkbox": {
+          # checkboxの値をユーザーの入力によって変化させる
+          "checkbox": true,
+        },
+      }
+    },
+    {
+      "page_id": 'fuga',
+      "properties": {
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
+    }
+  ...
+  ]
 }
 ```
