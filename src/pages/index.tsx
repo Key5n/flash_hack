@@ -1,29 +1,20 @@
 import Head from 'next/head';
-import { useState, FC } from 'react';
 
-export default function Home() {
+import { Client } from '@notionhq/client';
+import { dataSchema } from './types';
+import { z } from 'zod';
+import { useState } from 'react';
+
+type dataType = z.infer<typeof dataSchema>;
+
+type Props = {
+  data: string;
+};
+export default function Page({ data }: Props) {
   const TEXT = 'Hello World';
   const [check, setCheck] = useState(false);
-  const FirstData: any = [
-    {
-      page_id: 'hoge',
-      properties: {
-        Checkbox: {
-          checkbox: false,
-        },
-      },
-    },
-    {
-      page_id: 'fuga',
-      properties: {
-        Checkbox: {
-          checkbox: false,
-        },
-      },
-    },
-  ];
-  //  }
-  const inputData = JSON.stringify(FirstData);
+
+  const inputData = dataSchema.parse(JSON.parse(data));
   const ChangeCheck = (inputData: string, check: boolean) => {
     let data = JSON.parse(inputData);
     data[0].properties.Checkbox.checkbox = check;
@@ -60,4 +51,39 @@ export default function Home() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const notion = new Client({
+    auth: process.env.NOTION_TOKEN,
+  });
+  const databaseId = process.env.NOTION_DATABASE_ID;
+  if (typeof databaseId === 'undefined') {
+    throw new Error('Notion database id not defined');
+  }
+  const myPage = await notion.databases.query({
+    database_id: databaseId,
+  });
+  const results = myPage.results;
+  const data: dataType = results
+    .map((item) => {
+      if (!('properties' in item)) {
+        throw new Error('properties not defined in page object response');
+      }
+      if (item.properties.Checkbox.type !== 'checkbox' || item.properties.Name.type !== 'title') {
+        throw new Error('Database type error');
+      }
+      const name = item.properties.Name.title[0].plain_text;
+      const isChecked = item.properties.Checkbox.checkbox;
+      return {
+        page_id: item.id,
+        checkbox: isChecked,
+        name: name,
+      };
+    })
+    .reverse();
+
+  // なぜかデータベースの下の行から順に返されるため、reverseする
+
+  return { props: { data } };
 }
