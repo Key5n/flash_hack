@@ -63,21 +63,13 @@
   [
     {
       "page_id": 'hoge',
-      "properties":{
-        "Checkbox": {
-          "checkbox": false,
-        },
-        "Name": "word1"
-      }
+      "checkbox": false,
+      "name": "word1"
     },
     {
       "page_id": 'fuga',
-      "properties": {
-        "Checkbox": {
-          "checkbox": false,
-        },
-        "Name": "word2"
-      }
+      "checkbox": false,
+      "name": "word2"
     }
   ...
   ]
@@ -91,20 +83,13 @@
   [
     {
       "page_id": 'hoge',
-      "properties":{
-        "Checkbox": {
-          # checkboxの値をユーザーの入力によって変化させる
-          "checkbox": true,
-        },
-      }
+      "checkbox": true,
+      "name": "word1",
     },
     {
       "page_id": 'fuga',
-      "properties": {
-        "Checkbox": {
-          "checkbox": false,
-        },
-      }
+      "checkbox": false,
+      "name": "word2"
     }
   ...
   ]
