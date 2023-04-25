@@ -10,9 +10,11 @@
     "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json}'"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.4",
     "next": "^12.3.4",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "^18.16.0",
