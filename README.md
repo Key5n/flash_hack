@@ -67,6 +67,7 @@
         "Checkbox": {
           "checkbox": false,
         },
+        "Name": "word1"
       }
     },
     {
@@ -75,6 +76,7 @@
         "Checkbox": {
           "checkbox": false,
         },
+        "Name": "word2"
       }
     }
   ...
