@@ -1,20 +1,29 @@
 import Head from 'next/head';
 
 import { Client } from '@notionhq/client';
-import { dataSchema } from './types';
+import { dataSchema } from '../types';
 import { z } from 'zod';
 import { useState } from 'react';
+import { trpc } from '@/utils/trpc';
 
 type dataType = z.infer<typeof dataSchema>;
 
 type Props = {
-  data: string;
+  dataJSON: string;
 };
-export default function Page({ data }: Props) {
+export default function Page({ dataJSON }: Props) {
+  const inputData = dataJSON;
+  const data = dataSchema.parse(JSON.parse(dataJSON));
+  const mutation = trpc.pages.useMutation();
+  function toggle() {
+    const a: dataType = data.map((item) => {
+      return { ...item, checkbox: !item.checkbox };
+    });
+    mutation.mutate(a);
+  }
   const TEXT = 'Hello World';
   const [check, setCheck] = useState(false);
 
-  const inputData = dataSchema.parse(JSON.parse(data));
   const ChangeCheck = (inputData: string, check: boolean) => {
     let data = JSON.parse(inputData);
     data[0].properties.Checkbox.checkbox = check;
@@ -82,8 +91,9 @@ export async function getServerSideProps() {
       };
     })
     .reverse();
+  const dataJSON = JSON.stringify(data);
 
   // なぜかデータベースの下の行から順に返されるため、reverseする
 
-  return { props: { data } };
+  return { props: { dataJSON } };
 }
