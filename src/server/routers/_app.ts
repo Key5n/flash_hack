@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { dataSchema } from '@/types';
 import { Client } from '@notionhq/client';
@@ -46,7 +45,7 @@ export const appRouter = router({
       })
       .reverse();
     return {
-      input,
+      values,
     };
   }),
 });

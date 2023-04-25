@@ -12,25 +12,24 @@ type Props = {
   dataJSON: string;
 };
 export default function Page({ dataJSON }: Props) {
-  const inputData = dataJSON;
   const data = dataSchema.parse(JSON.parse(dataJSON));
+  const [dbState, setDbState] = useState<dataType>(data);
   const mutation = trpc.pages.useMutation();
-  function toggle() {
-    const a: dataType = data.map((item) => {
-      return { ...item, checkbox: !item.checkbox };
+
+  const onChangeHandler = (item: dataType[number]) => {
+    setDbState((prev) => {
+      const array = prev.map((data) => {
+        return data.page_id === item.page_id
+          ? {
+              name: data.name,
+              checkbox: !data.checkbox,
+              page_id: data.page_id,
+            }
+          : data;
+      });
+      mutation.mutate(array);
+      return array;
     });
-    mutation.mutate(a);
-  }
-  const TEXT = 'Hello World';
-  const [check, setCheck] = useState(false);
-
-  const ChangeCheck = (inputData: string, check: boolean) => {
-    let data = JSON.parse(inputData);
-    data[0].properties.Checkbox.checkbox = check;
-    let outputData = JSON.stringify(data);
-    console.log(outputData);
-
-    return outputData;
   };
 
   return (
@@ -41,22 +40,24 @@ export default function Page({ dataJSON }: Props) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
-        <div>{TEXT}</div>
-        <div>
-          <label>
-            <input
-              type='checkbox'
-              //value=""
-              checked={check}
-              onChange={() => {
-                setCheck((prev) => !prev);
-                ChangeCheck(inputData, !check);
-              }}
-            />
-            わかった
-          </label>
-        </div>
+      <main className='card-container'>
+        {dbState.map((item) => {
+          return (
+            <div key={item.page_id} className='card'>
+              <label>
+                <div>{item.name}</div>
+                <input
+                  type='checkbox'
+                  checked={item.checkbox}
+                  onChange={() => {
+                    onChangeHandler(item);
+                  }}
+                />
+                わかった
+              </label>
+            </div>
+          );
+        })}
       </main>
     </>
   );
@@ -91,9 +92,8 @@ export async function getServerSideProps() {
       };
     })
     .reverse();
-  const dataJSON = JSON.stringify(data);
-
   // なぜかデータベースの下の行から順に返されるため、reverseする
+  const dataJSON = JSON.stringify(data);
 
   return { props: { dataJSON } };
 }
