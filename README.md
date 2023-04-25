@@ -39,6 +39,21 @@
 一方が Notion 提携
 もう一方がフラッシュカード
 
+# Notion 提携側
+
+## データフェッチ
+
+1. ルートにおいて getServersideProps でデータベースの値を fetch してくる
+1. データベースの値をグローバルコンテキストにセット
+
+## データ更新
+
+1. 下のデータモデルの出力のようなデータが request の body として与えられる
+1. `/api/page/`にリクエストが投げられる
+1. ページ ID のチェックボックスを request の body の通りにセットする
+1. notion から更新後のデータベースの値を返す
+1. クライアントサイドで変更させる
+
 # データモデル
 
 入力
@@ -47,16 +62,20 @@
 {
   [
     {
-      "Checkbox": {
-        "id": "hogeid",
-        "checkbox": false,
-      },
+      "page_id": 'hoge',
+      "properties":{
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
     },
     {
-      "Checkbox": {
-        "id": "fugaid",
-        "checkbox": false,
-      },
+      "page_id": 'fuga',
+      "properties": {
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
     }
   ...
   ]
@@ -69,16 +88,21 @@
 {
   [
     {
-      "Checkbox": {
-        "id": "hogeid",
-        "checkbox": true,
-      },
+      "page_id": 'hoge',
+      "properties":{
+        "Checkbox": {
+          # checkboxの値をユーザーの入力によって変化させる
+          "checkbox": true,
+        },
+      }
     },
     {
-      "Checkbox": {
-        "id": "fugaid",
-        "checkbox": false,
-      },
+      "page_id": 'fuga',
+      "properties": {
+        "Checkbox": {
+          "checkbox": false,
+        },
+      }
     }
   ...
   ]
